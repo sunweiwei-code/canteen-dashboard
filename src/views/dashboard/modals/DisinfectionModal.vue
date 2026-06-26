@@ -27,14 +27,7 @@
 
     <div class="pagination-bar">
       <button class="page-btn" :disabled="currentPage <= 1" @click="prevPage">&#9664;</button>
-      <span
-        v-for="page in visiblePages"
-        :key="page"
-        :class="['page-num', { active: page === currentPage, ellipsis: page === '...' }]"
-        @click="typeof page === 'number' && goToPage(page)"
-      >
-        {{ page }}
-      </span>
+      <span class="page-info">{{ currentPage }} / {{ totalPages }}</span>
       <button class="page-btn" :disabled="currentPage >= totalPages" @click="nextPage">&#9654;</button>
     </div>
   </div>
@@ -54,27 +47,6 @@ const pagedData = computed(() => {
   const start = (currentPage.value - 1) * pageSize
   return props.data.slice(start, start + pageSize)
 })
-
-const visiblePages = computed<(number | string)[]>(() => {
-  const total = totalPages.value
-  const cur = currentPage.value
-  if (total <= 7) {
-    return Array.from({ length: total }, (_, i) => i + 1)
-  }
-  if (cur <= 4) {
-    return [1, 2, 3, 4, 5, '...', total]
-  }
-  if (cur >= total - 3) {
-    return [1, '...', total - 4, total - 3, total - 2, total - 1, total]
-  }
-  return [1, '...', cur - 1, cur, cur + 1, '...', total]
-})
-
-const goToPage = (page: number) => {
-  if (page >= 1 && page <= totalPages.value) {
-    currentPage.value = page
-  }
-}
 
 const prevPage = () => { if (currentPage.value > 1) currentPage.value-- }
 const nextPage = () => { if (currentPage.value < totalPages.value) currentPage.value++ }
@@ -183,39 +155,10 @@ const nextPage = () => { if (currentPage.value < totalPages.value) currentPage.v
   color: #556;
 }
 
-.page-num {
-  min-width: 28px;
-  height: 28px;
-  padding: 0 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  border: 1px solid rgba(71,168,228,.35);
-  background: rgba(4,43,73,.6);
+.page-info {
+  font-size: 14px;
   color: #eef8ff;
-  font-size: 13px;
-  cursor: pointer;
-  transition: all .2s;
-
-  &:hover:not(.active):not(.ellipsis) {
-    background: rgba(16,72,112,.9);
-    border-color: rgba(54,224,255,.6);
-    color: #fff;
-  }
-
-  &.active {
-    background: rgba(54,224,255,.25);
-    border-color: rgba(54,224,255,.8);
-    color: #36e0ff;
-    font-weight: 700;
-    cursor: default;
-  }
-
-  &.ellipsis {
-    border-color: transparent;
-    background: transparent;
-    cursor: default;
-  }
+  min-width: 50px;
+  text-align: center;
 }
 </style>
