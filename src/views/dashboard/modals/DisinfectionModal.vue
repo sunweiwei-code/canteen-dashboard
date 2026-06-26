@@ -1,0 +1,221 @@
+<template>
+  <div class="modal-content">
+    <div class="table-wrapper">
+      <table class="disinfection-detail-table">
+        <thead>
+          <tr>
+            <th class="col-seq">序号</th>
+            <th>消毒日期</th>
+            <th>消毒开始时间</th>
+            <th>消毒结束时间</th>
+            <th>消毒质量</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(item, index) in pagedData" :key="item.id">
+            <td class="col-seq">{{ (currentPage - 1) * pageSize + index + 1 }}</td>
+            <td>{{ item.date }}</td>
+            <td>{{ item.startTime }}</td>
+            <td>{{ item.endTime }}</td>
+            <td>
+              <span :class="['tag', item.status === '合格' ? 'tag-ok' : 'tag-warn']">{{ item.status }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination-bar">
+      <button class="page-btn" :disabled="currentPage <= 1" @click="prevPage">&#9664;</button>
+      <span
+        v-for="page in visiblePages"
+        :key="page"
+        :class="['page-num', { active: page === currentPage, ellipsis: page === '...' }]"
+        @click="typeof page === 'number' && goToPage(page)"
+      >
+        {{ page }}
+      </span>
+      <button class="page-btn" :disabled="currentPage >= totalPages" @click="nextPage">&#9654;</button>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+
+const props = defineProps<{ data: any[] }>()
+
+const pageSize = 9
+const currentPage = ref(1)
+
+const totalPages = computed(() => Math.max(1, Math.ceil(props.data.length / pageSize)))
+
+const pagedData = computed(() => {
+  const start = (currentPage.value - 1) * pageSize
+  return props.data.slice(start, start + pageSize)
+})
+
+const visiblePages = computed<(number | string)[]>(() => {
+  const total = totalPages.value
+  const cur = currentPage.value
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, i) => i + 1)
+  }
+  if (cur <= 4) {
+    return [1, 2, 3, 4, 5, '...', total]
+  }
+  if (cur >= total - 3) {
+    return [1, '...', total - 4, total - 3, total - 2, total - 1, total]
+  }
+  return [1, '...', cur - 1, cur, cur + 1, '...', total]
+})
+
+const goToPage = (page: number) => {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page
+  }
+}
+
+const prevPage = () => { if (currentPage.value > 1) currentPage.value-- }
+const nextPage = () => { if (currentPage.value < totalPages.value) currentPage.value++ }
+</script>
+
+<style scoped>
+.modal-content {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.table-wrapper {
+  flex: 1;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: rgba(30,120,255,.2); border-radius: 2px; }
+}
+
+.disinfection-detail-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  color: #eaf6ff;
+  text-align: center;
+
+  thead th {
+    height: 40px;
+    color: #22a9ff;
+    font-weight: 800;
+    background: rgba(4,43,73,.72);
+    border-bottom: 1px solid rgba(38,130,197,.24);
+    position: sticky;
+    top: 0;
+  }
+
+  tbody td {
+    padding: 10px 8px;
+    background: rgba(8,37,62,.72);
+    border-top: 1px solid rgba(38,130,197,.24);
+  }
+
+  tbody tr:hover td {
+    background: rgba(16,72,112,.82);
+    color: #fff;
+  }
+
+  .col-seq { width: 60px; }
+}
+
+.tag {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.tag-ok {
+  background: rgba(67,233,123,.18);
+  color: #43e97b;
+}
+
+.tag-warn {
+  background: rgba(245,87,54,.18);
+  color: #f5576c;
+}
+
+.pagination-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 14px 0 4px;
+  flex-shrink: 0;
+}
+
+.page-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(71,168,228,.35);
+  border-radius: 4px;
+  background: rgba(4,43,73,.6);
+  color: #eef8ff;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .2s;
+}
+
+.page-btn:hover:not(:disabled) {
+  background: rgba(16,72,112,.9);
+  border-color: rgba(54,224,255,.6);
+  color: #fff;
+}
+
+.page-btn:disabled {
+  opacity: .35;
+  cursor: not-allowed;
+  color: #556;
+}
+
+.page-num {
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  border: 1px solid rgba(71,168,228,.35);
+  background: rgba(4,43,73,.6);
+  color: #eef8ff;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all .2s;
+
+  &:hover:not(.active):not(.ellipsis) {
+    background: rgba(16,72,112,.9);
+    border-color: rgba(54,224,255,.6);
+    color: #fff;
+  }
+
+  &.active {
+    background: rgba(54,224,255,.25);
+    border-color: rgba(54,224,255,.8);
+    color: #36e0ff;
+    font-weight: 700;
+    cursor: default;
+  }
+
+  &.ellipsis {
+    border-color: transparent;
+    background: transparent;
+    cursor: default;
+  }
+}
+</style>

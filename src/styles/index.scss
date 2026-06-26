@@ -1,0 +1,89 @@
+/* 全局样式 */
+:root {
+  --bg-primary: #020918;
+  --bg-secondary: #04152b;
+  --bg-card: linear-gradient(180deg, rgba(2,19,38,.82), rgba(2,17,31,.72));
+  --bg-card-hover: rgba(16,72,112,.82);
+  --border-color: rgba(71,168,228,.28);
+  --border-active: rgba(54,224,255,.72);
+  --text-primary: #eef8ff;
+  --text-secondary: #7a8ba6;
+  --text-accent: #22a9ff;
+  --color-success: #43e97b;
+  --color-warning: #f59e0b;
+  --color-danger: #f5576c;
+  --color-info: #4facfe;
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(5,28,48,.55);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #1fb6ff, #0d5c95);
+  border-radius: 3px;
+  box-shadow: 0 0 8px rgba(0,210,255,.35);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #3dd0ff, #1a7bc0);
+}
+
+/* 对话框样式覆盖 */
+.canteen-dialog {
+  background: var(--bg-secondary) !important;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+}
+.canteen-dialog .el-dialog__header {
+  border-bottom: 1px solid rgba(30, 120, 255, 0.2);
+  padding: 16px 20px;
+  margin-right: 0;
+}
+.canteen-dialog .el-dialog__title {
+  color: var(--text-primary);
+  font-size: 18px;
+  font-weight: 600;
+}
+.canteen-dialog .el-dialog__headerbtn {
+  top: 16px;
+  right: 20px;
+}
+.canteen-dialog .el-dialog__headerbtn .el-dialog__close {
+  color: var(--text-secondary);
+  font-size: 20px;
+}
+.canteen-dialog .el-dialog__headerbtn .el-dialog__close:hover {
+  color: var(--text-primary);
+}
+.canteen-dialog .el-dialog__body {
+  padding: 20px;
+  color: var(--text-primary);
+}
+.canteen-dialog .el-table {
+  --el-table-bg-color: transparent;
+  --el-table-tr-bg-color: transparent;
+  --el-table-header-bg-color: rgba(10, 22, 40, 0.6);
+  --el-table-border-color: rgba(30, 120, 255, 0.15);
+  --el-table-text-color: var(--text-primary);
+  --el-table-header-text-color: var(--text-accent);
+  --el-table-row-hover-bg-color: rgba(30, 120, 255, 0.08);
+}
+
+/* Element Plus 表格深色主题 */
+.canteen-dialog .el-table th.el-table__cell {
+  background-color: rgba(10, 22, 40, 0.6);
+  color: var(--text-accent);
+  font-weight: 600;
+  border-bottom: 1px solid rgba(30, 120, 255, 0.3);
+}
+.canteen-dialog .el-table td.el-table__cell {
+  border-bottom: 1px solid rgba(30, 120, 255, 0.08);
+}
+.canteen-dialog .el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell {
+  background-color: rgba(30, 120, 255, 0.03);
+}
